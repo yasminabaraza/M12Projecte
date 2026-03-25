@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Auto-install dependencies when package-lock.json changes after a merge/pull
+
+changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+
+if echo "$changed_files" | grep -q "^package-lock.json$"; then
+  echo "📦 package-lock.json ha canviat. Executant npm install..."
+  npm install
+fi

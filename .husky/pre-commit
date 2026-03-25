@@ -1,0 +1,33 @@
+set -e
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" = "main" ]; then
+  echo ""
+  echo "❌ COMMIT BLOQUEJAT: No es permeten commits directes a 'main'. Crea una branca!"
+  exit 1
+fi
+echo "✅ No estem a main"
+
+echo "--- Comprovant TypeScript (backend) ---"
+if ! (cd backend && npm run typecheck --silent 2>&1); then
+  echo ""
+  echo "❌ COMMIT BLOQUEJAT: Errors de TypeScript al backend. Corregeix-los abans de fer commit."
+  exit 1
+fi
+echo "✅ Backend typecheck correcte"
+
+echo "--- Comprovant TypeScript (frontend) ---"
+if ! (cd frontend && npm run typecheck --silent 2>&1); then
+  echo ""
+  echo "❌ COMMIT BLOQUEJAT: Errors de TypeScript al frontend. Corregeix-los abans de fer commit."
+  exit 1
+fi
+echo "✅ Frontend typecheck correcte"
+
+echo "--- Executant lint-staged (Prettier) ---"
+if ! npx lint-staged; then
+  echo ""
+  echo "❌ COMMIT BLOQUEJAT: Errors de format. Corregeix-los abans de fer commit."
+  exit 1
+fi
+echo "✅ Lint-staged correcte"
