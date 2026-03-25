@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Prevent direct commits to main
+branch="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$branch" = "main" ]; then
+  echo "❌ No pots fer commits directament a main. Crea una branca!"
+  exit 1
+fi
+
+# Run lint-staged (prettier)
+npx lint-staged
