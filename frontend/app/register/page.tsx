@@ -7,8 +7,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#02080a] text-cyan-50">
-      <div className="bg-[#041823] p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-abyss-bg text-cyan-50">
+      <div className="bg-abyss-panel p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center">Registro</h1>
 
         <form className="flex flex-col gap-4">
@@ -18,7 +18,7 @@ export default function RegisterPage() {
             placeholder="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="p-3 rounded-lg bg-[#02080a] text-cyan-50 border border-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="p-3 rounded-lg bg-abyss-bg text-cyan-50 border border-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
 
           {/* Password */}
@@ -27,7 +27,7 @@ export default function RegisterPage() {
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-3 rounded-lg bg-[#02080a] text-cyan-50 border border-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="p-3 rounded-lg bg-abyss-bg text-cyan-50 border border-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
 
           {/* Botón */}
