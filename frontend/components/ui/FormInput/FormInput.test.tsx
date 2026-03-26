@@ -40,4 +40,39 @@ describe("Donat el component FormInput", () => {
       expect(input).toHaveClass("rounded-lg");
     });
   });
+
+  describe("Quan es passa un error", () => {
+    test("Ha de mostrar el missatge d'error", () => {
+      render(
+        <FormInput placeholder="Correu" error="El correu és obligatori" />,
+      );
+      expect(screen.getByText("El correu és obligatori")).toBeInTheDocument();
+    });
+
+    test("Ha de marcar l'input com a aria-invalid", () => {
+      render(<FormInput placeholder="Correu" error="Error" />);
+      const input = screen.getByPlaceholderText("Correu");
+      expect(input).toHaveAttribute("aria-invalid", "true");
+    });
+
+    test("Ha de vincular l'error amb aria-describedby", () => {
+      render(<FormInput placeholder="Correu" error="Error" />);
+      const input = screen.getByPlaceholderText("Correu");
+      const errorElement = screen.getByText("Error");
+      expect(input).toHaveAttribute("aria-describedby", errorElement.id);
+    });
+  });
+
+  describe("Quan no hi ha error", () => {
+    test("No ha de mostrar cap missatge d'error", () => {
+      render(<FormInput placeholder="Correu" />);
+      expect(screen.queryByRole("paragraph")).not.toBeInTheDocument();
+    });
+
+    test("No ha de tenir aria-invalid", () => {
+      render(<FormInput placeholder="Correu" />);
+      const input = screen.getByPlaceholderText("Correu");
+      expect(input).toHaveAttribute("aria-invalid", "false");
+    });
+  });
 });
