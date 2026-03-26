@@ -16,20 +16,23 @@ const createParticles = (): Particle[] => {
 };
 
 const FloatingDust = () => {
-  const [particles, setParticles] = useState<Particle[]>(createParticles);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
+    let initial = createParticles();
     const interval = setInterval(() => {
-      setParticles((p) =>
-        p.map((pt) => ({
-          ...pt,
-          x: pt.x + pt.drift,
-          y: pt.y - pt.speed > -2 ? pt.y - pt.speed : 102,
-        })),
-      );
+      initial = initial.map((pt) => ({
+        ...pt,
+        x: pt.x + pt.drift,
+        y: pt.y - pt.speed > -2 ? pt.y - pt.speed : 102,
+      }));
+      setParticles([...initial]);
     }, 50);
     return () => clearInterval(interval);
   }, []);
+
+  if (particles.length === 0)
+    return <div className="absolute inset-0 pointer-events-none z-0" />;
 
   return (
     <div className="absolute inset-0 pointer-events-none z-0">
