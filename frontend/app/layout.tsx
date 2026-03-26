@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import React from "react";
-import FloatingDust from "@/components/landing/FloatingDust/FloatingDust";
+import FloatingDust from "@/components/effects/FloatingDust/FloatingDust";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +31,7 @@ export default function RootLayout({
       lang="ca"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="bg-[#02080a] text-cyan-50 font-mono min-h-full flex flex-col overflow-x-hidden">
+      <body className="bg-abyss-bg text-cyan-50 font-mono min-h-full flex flex-col overflow-x-hidden">
         {/* Tus capas visuales fijas que se verán en TODO el proyecto */}
         <div className="fixed inset-0 pointer-events-none z-20">
           {/* Capa de ruido */}

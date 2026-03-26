@@ -1,16 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  drift: number;
-  speed: number;
-}
+import type { Particle } from "@/types/effects";
 
 const createParticles = (): Particle[] => {
   return Array.from({ length: 60 }, (_, i) => ({
