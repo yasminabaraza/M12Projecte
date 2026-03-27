@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { hashPassword } from "../utils/password";
+// import { comparePassword } from "../utils/password";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const hasUppercase = /[A-Z]/;
@@ -8,16 +10,16 @@ export async function login(req: Request, res: Response) {
   const { email, password } = req.body ?? {};
 
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({
-        message: "El correu electrònic i la contrasenya són obligatoris",
-      });
+    return res.status(400).json({
+      message: "El correu electrònic i la contrasenya són obligatoris",
+    });
   }
 
   // TODO (#66): buscar usuari a BD (Prisma)
   // TODO (#65): comparar password amb bcrypt
+  // const ok = await comparePassword(password, user.passwordHash);
   // TODO (#56): generar JWT i retornar-lo
+
   return res.status(200).json({ message: "Endpoint de login OK", email });
 }
 
@@ -26,11 +28,9 @@ export async function register(req: Request, res: Response) {
 
   // required
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({
-        message: "El correu electrònic i la contrasenya són obligatoris",
-      });
+    return res.status(400).json({
+      message: "El correu electrònic i la contrasenya són obligatoris",
+    });
   }
 
   // email format
@@ -49,11 +49,9 @@ export async function register(req: Request, res: Response) {
 
   // password uppercase
   if (!hasUppercase.test(password)) {
-    return res
-      .status(400)
-      .json({
-        message: "La contrasenya ha de contenir almenys una lletra majúscula",
-      });
+    return res.status(400).json({
+      message: "La contrasenya ha de contenir almenys una lletra majúscula",
+    });
   }
 
   // password number
@@ -63,9 +61,10 @@ export async function register(req: Request, res: Response) {
       .json({ message: "La contrasenya ha de contenir almenys un número" });
   }
 
-  // TODO (#66): comprovar duplicat a BD
   // TODO (#65): bcrypt
-  // TODO (#66): guardar usuari
+  const passwordHash = await hashPassword(password);
+
+  // TODO (#66): guardar usuari a BD amb Prisma utilitzant passwordHash
 
   return res.status(201).json({
     message: "Endpoint de registre OK",
