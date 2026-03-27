@@ -1,4 +1,4 @@
-import express from "express";
+/*import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
@@ -17,4 +17,17 @@ const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+*/
+
+import express from "express";
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Backend funcionando 🚀");
+});
+
+app.listen(3001, () => {
+  console.log("Servidor en http://localhost:3001");
 });
