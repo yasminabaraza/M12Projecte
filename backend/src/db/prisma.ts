@@ -16,10 +16,6 @@ if (!connectionString) {
   throw new Error("DATABASE_URL no està definida");
 }
 
-// debug temporal
-const u = new URL(connectionString);
-console.log("[DB]", u.hostname, u.port, u.pathname);
-
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
