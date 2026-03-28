@@ -60,7 +60,7 @@ const LoginPage = () => {
       { email, password },
       {
         onSuccess: () => router.push("/"),
-        onError: (error) => {
+        onError: (error: unknown) => {
           setApiError(
             error instanceof ApiError
               ? error.message
