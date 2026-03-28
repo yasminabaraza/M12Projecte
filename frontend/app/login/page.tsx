@@ -1,15 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import FormInput from "@/components/ui/FormInput/FormInput";
 import FormButton from "@/components/ui/FormButton/FormButton";
 import AuthFormCard from "@/components/auth/AuthFormCard/AuthFormCard";
 import { LOGIN_COPY } from "@/constants/copy/auth";
 import { validateEmail, validatePassword } from "@/utils/validation";
+import useLogin from "@/hooks/useLogin";
+import { ApiError } from "@/services/apiClient";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const { mutate, isPending } = useLogin();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [apiError, setApiError] = useState<string | null>(null);
   const [errors, setErrors] = useState<{
     email: string | null;
     password: string | null;
@@ -48,7 +55,20 @@ const LoginPage = () => {
     e,
   ) => {
     e.preventDefault();
-    // TODO: connectar amb l'API d'autenticació
+    setApiError(null);
+    mutate(
+      { email, password },
+      {
+        onSuccess: () => router.push("/"),
+        onError: (error) => {
+          setApiError(
+            error instanceof ApiError
+              ? error.message
+              : "Error de connexió amb el servidor",
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -75,7 +95,12 @@ const LoginPage = () => {
         onBlur={() => handleBlur("password")}
         error={touched.password ? errors.password : null}
       />
-      <FormButton disabled={!isValid}>{LOGIN_COPY.submit}</FormButton>
+      {apiError && (
+        <p className="text-red-400 text-sm text-center">{apiError}</p>
+      )}
+      <FormButton disabled={!isValid || isPending}>
+        {isPending ? "Entrant..." : LOGIN_COPY.submit}
+      </FormButton>
     </AuthFormCard>
   );
 };
