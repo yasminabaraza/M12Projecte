@@ -20,7 +20,7 @@ export async function login(req: Request, res: Response) {
   // const ok = await comparePassword(password, user.passwordHash);
   // TODO (#56): generar JWT i retornar-lo
 
-  return res.status(200).json({ message: "Endpoint de login OK", email });
+  return res.status(200).json({ message: "Endpoint de login OK" });
 }
 
 export async function register(req: Request, res: Response) {
@@ -61,7 +61,7 @@ export async function register(req: Request, res: Response) {
       .json({ message: "La contrasenya ha de contenir almenys un número" });
   }
 
-  // TODO (#65): bcrypt
+  // (#65): bcrypt
   const passwordHash = await hashPassword(password);
 
   // TODO (#66): guardar usuari a BD amb Prisma utilitzant passwordHash
