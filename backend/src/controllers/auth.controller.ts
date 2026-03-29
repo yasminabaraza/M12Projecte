@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { hashPassword, comparePassword } from "../utils/password";
 import { prisma } from "../db/prisma";
+import { signToken } from "../utils/jwt";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const hasUppercase = /[A-Z]/;
@@ -51,11 +52,15 @@ export async function login(req: Request, res: Response) {
       return res.status(401).json({ message: "Credencials incorrectes" });
     }
 
-    // TODO (#56): JWT vindrà després
-    // Ex. futur: return res.status(200).json({ token, user: { ... } });
-
+    // (#56): JWT
+    const token = signToken({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
     return res.status(200).json({
       message: "Login correcte",
+      token,
       user: {
         id: user.id,
         email: user.email,
