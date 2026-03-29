@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { hashPassword } from "../utils/password";
-// import { comparePassword } from "../utils/password";
+import { hashPassword, comparePassword } from "../utils/password";
 import { prisma } from "../db/prisma";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const hasUppercase = /[A-Z]/;
 const hasNumber = /\d/;
 
+// Login
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body ?? {};
 
@@ -16,14 +16,60 @@ export async function login(req: Request, res: Response) {
     });
   }
 
-  // TODO (#66): buscar usuari a BD (Prisma)
-  // TODO (#65): comparar password amb bcrypt
-  // const ok = await comparePassword(password, user.passwordHash);
-  // TODO (#56): generar JWT i retornar-lo
+  // Normalització (abans del regex)
+  const normalizedEmail = String(email).trim().toLowerCase();
+  const passwordStr = String(password);
 
-  return res.status(200).json({ message: "Endpoint de login OK" });
+  // Validació de format d'email (coherent amb register)
+  if (!emailRegex.test(normalizedEmail)) {
+    return res.status(400).json({
+      message: "El format del correu electrònic no és vàlid",
+    });
+  }
+
+  try {
+    // (#66): Buscar usuari a BD (Prisma)
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        passwordHash: true,
+      },
+    });
+
+    // No donar info si l'email existeix o no
+    if (!user) {
+      return res.status(401).json({ message: "Credencials incorrectes" });
+    }
+
+    // (#65): Comparar password amb bcrypt
+    const ok = await comparePassword(passwordStr, user.passwordHash);
+    if (!ok) {
+      return res.status(401).json({ message: "Credencials incorrectes" });
+    }
+
+    // TODO (#56): JWT vindrà després
+    // Ex. futur: return res.status(200).json({ token, user: { ... } });
+
+    return res.status(200).json({
+      message: "Login correcte",
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    console.error("LOGIN ERROR →", err);
+    return res.status(500).json({ message: "Error intern en fer login" });
+  }
 }
 
+// Register
 export async function register(req: Request, res: Response) {
   const { email, password, username } = req.body ?? {};
 
@@ -35,29 +81,34 @@ export async function register(req: Request, res: Response) {
     });
   }
 
+  // Normalització (abans de validar)
+  const normalizedEmail = String(email).trim().toLowerCase();
+  const normalizedUsername = String(username).trim();
+  const passwordStr = String(password);
+
   // email format
-  if (!emailRegex.test(email)) {
+  if (!emailRegex.test(normalizedEmail)) {
     return res
       .status(400)
       .json({ message: "El format del correu electrònic no és vàlid" });
   }
 
   // password min length (6 segons frontend)
-  if (typeof password !== "string" || password.length < 6) {
+  if (passwordStr.length < 6) {
     return res
       .status(400)
       .json({ message: "La contrasenya ha de tenir com a mínim 6 caràcters" });
   }
 
   // password uppercase
-  if (!hasUppercase.test(password)) {
+  if (!hasUppercase.test(passwordStr)) {
     return res.status(400).json({
       message: "La contrasenya ha de contenir almenys una lletra majúscula",
     });
   }
 
   // password number
-  if (!hasNumber.test(password)) {
+  if (!hasNumber.test(passwordStr)) {
     return res
       .status(400)
       .json({ message: "La contrasenya ha de contenir almenys un número" });
@@ -66,17 +117,13 @@ export async function register(req: Request, res: Response) {
   // (#65): bcrypt
   const passwordHash = await hashPassword(password);
 
-  // (#66): guardar usuari a BD amb Prisma utilitzant passwordHash
-  const normalizedEmail = email.trim().toLowerCase();
-  const normalizedUsername = username.trim();
-
   try {
+    // (#66): guardar usuari a BD amb Prisma utilitzant passwordHash
     const createdUser = await prisma.user.create({
       data: {
         email: normalizedEmail,
         username: normalizedUsername,
         passwordHash,
-        // role no caldria: al model per defecte és user
       },
       select: {
         id: true,
