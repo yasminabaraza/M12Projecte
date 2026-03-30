@@ -33,22 +33,13 @@ export default function InstructionsPage() {
 
           {/* GRID */}
           <div className="grid md:grid-cols-2 gap-6 mb-10">
-            {INSTRUCTIONS_COPY.steps.map(
-              (step: { num: string; title: string; desc: string }) => (
-                <div
-                  key={step.num}
-                  className="border border-cyan-500/20 p-6 relative"
-                >
-                  <span className="absolute top-2 right-4 text-cyan-800 text-xs">
-                    {step.num}
-                  </span>
-
-                  <h3 className="text-cyan-400 font-bold mb-2">{step.title}</h3>
-
-                  <p className="text-cyan-700 text-sm">{step.desc}</p>
-                </div>
-              ),
-            )}
+            {INSTRUCTIONS_COPY.steps.map((step: { num: string; title: string; desc: string }) => (
+              <div key={step.num} className="border border-cyan-500/20 p-6 relative">
+                <span className="absolute top-2 right-4 text-cyan-800 text-xs">{step.num}</span>
+                <h3 className="text-cyan-400 font-bold mb-2">{step.title}</h3>
+                <p className="text-cyan-700 text-sm">{step.desc}</p>
+              </div>
+            ))}
           </div>
 
           {/* ALERT */}
@@ -63,22 +54,15 @@ export default function InstructionsPage() {
               <p key={index}>{c}</p>
             ))}
           </div>
-
-          {/* FOOTER */}
-          <div className="flex justify-between">
-            <button
-              onClick={() => router.push("/")}
-              className="text-cyan-600 hover:text-cyan-400 text-sm"
-            >
-              {INSTRUCTIONS_COPY.cta.secondary}
-            </button>
-
-            <button
-              onClick={() => router.push("/narrative")}
-              className="px-6 py-3 bg-cyan-500 text-black font-bold text-sm tracking-widest hover:bg-cyan-400"
-            >
-              ▶ {INSTRUCTIONS_COPY.cta.primary}
-            </button>
+            {/* FOOTER */}
+           <div className="flex justify-start">
+              <button
+                onClick={() => router.push("/")}
+                className="text-cyan-600 hover:text-cyan-400 text-sm"
+              >
+                {INSTRUCTIONS_COPY.cta.secondary}
+              </button>
+            </div>
           </div>
         </div>
       </div>
