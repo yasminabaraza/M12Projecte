@@ -61,13 +61,22 @@ export default function InstructionsPage() {
               <p key={index}>{c}</p>
             ))}
           </div>
+
           {/* FOOTER */}
-          <div className="flex justify-start">
+
+          <div className="flex justify-between">
             <button
               onClick={() => router.push("/")}
               className="text-cyan-600 hover:text-cyan-400 text-sm"
             >
               {INSTRUCTIONS_COPY.cta.secondary}
+            </button>
+
+            <button
+              onClick={() => router.push("/narrative")}
+              className="px-6 py-3 bg-cyan-500 text-black font-bold text-sm tracking-widest hover:bg-cyan-400"
+            >
+              ▶ {INSTRUCTIONS_COPY.cta.primary}
             </button>
           </div>
         </div>

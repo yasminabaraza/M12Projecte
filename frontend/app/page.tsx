@@ -1,12 +1,17 @@
 "use client";
+
 import Navbar from "@/components/layout/Navbar";
 import { LANDING_COPY } from "@/constants/copy/landing";
 import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
-  const router = useRouter(); // Hook de Next.js para navegación programática
+  const router = useRouter();
 
-    // Función para ir a narrativa
+  // Función para ir a narrativa
+  const goToNarrative = () => {
+    router.push("/narrative");
+  };
+
   return (
     <main className="min-h-screen text-cyan-50 font-mono flex flex-col items-center selection:bg-cyan-950 overflow-hidden relative">
       <Navbar />
@@ -56,22 +61,35 @@ export default function LandingPage() {
 
         {/* Botons d'acció */}
         <div className="mt-16 flex flex-col items-center gap-6 w-full">
-          <button className="group relative px-20 py-4 border border-cyan-400 text-cyan-400 text-xs tracking-[0.4em] uppercase transition-all hover:bg-cyan-400 hover:text-black">
+          <button
+            onClick={goToNarrative} // <-- Esto redirige a /narrative
+            className="group relative px-20 py-4 border border-cyan-400 text-cyan-400 text-xs tracking-[0.4em] uppercase transition-all hover:bg-cyan-400 hover:text-black"
+          >
             <span className="relative z-10 font-bold">
               ▶ {LANDING_COPY.ctaPrimary}
             </span>
           </button>
+        </div>
 
-          <div className="flex gap-12 text-[9px] tracking-[0.3em] text-cyan-900 uppercase font-bold">
-            {LANDING_COPY.ctaSecondary.map((cta) => (
+        <div className="flex gap-12 text-[9px] tracking-[0.3em] text-cyan-900 uppercase font-bold">
+          {LANDING_COPY.ctaSecondary.map((cta) => {
+            // Mapear label a ruta
+            let target = "/";
+            if (cta.label.toLowerCase() === "instruccions")
+              target = "/instruccions";
+            if (cta.label.toLowerCase() === "el meu perfil")
+              target = "/profile";
+
+            return (
               <button
                 key={cta.label}
+                onClick={() => router.push(target)}
                 className="hover:text-cyan-400 transition-colors"
               >
                 {cta.label}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
 

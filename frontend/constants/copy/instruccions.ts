@@ -27,7 +27,7 @@ export const INSTRUCTIONS_COPY = {
   ],
 
   alert:
-    "⚠ AVÍS DE MISSIÓ: L'estació està en quarantena. Tens temps limitat per sala. No cometis errors.",
+    " AVÍS DE MISSIÓ: L'estació està en quarantena. Tens temps limitat per sala. No cometis errors.",
 
   controls: [
     "Clic esquerre sobre un objecte  → Examinar",

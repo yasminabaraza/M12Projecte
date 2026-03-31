@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "@/components/layout/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User, DEFAULT_USER } from "@/constants/copy/profile";
 
@@ -11,6 +11,7 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  //Arxius estaticos
   const achievements = [
     { name: "Primer immersió", icon: "🌊", unlocked: true },
     { name: "Observador", icon: "👁", unlocked: true },
@@ -21,7 +22,7 @@ export default function ProfilePage() {
     { name: "Descoberta", icon: "🧬", unlocked: false },
     { name: "Abyss", icon: "🌑", unlocked: false },
   ];
-
+  // Registre de activitats estàtic per mostrar a la pàgina de perfil.
   const gameLog = [
     {
       time: "04:32",
@@ -42,6 +43,7 @@ export default function ProfilePage() {
     { time: "04:44", text: "Intent de codi incorrecte. Intents restants: 3." },
   ];
 
+  //Manejor de formulari d'edició de perfil
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -54,6 +56,35 @@ export default function ProfilePage() {
     setTimeout(() => setSuccess(false), 2000);
   };
 
+  //Fetch de la partida activa
+  useEffect(() => {
+    const loadActiveGame = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch("http://localhost:3000/game/me/active", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.status === 404) return;
+
+        const data = await res.json();
+        setUser((prev) => ({
+          ...prev,
+          currentRoom: data.currentRoom,
+          completion: data.completion,
+          startDate: data.startDate,
+          status: "EN CURS",
+        }));
+      } catch (err) {
+        console.error("Error fetching active game:", err);
+      }
+    };
+
+    // Llamamos a la función async
+    loadActiveGame();
+  }, []);
   return (
     <main className="min-h-screen bg-[#010d16] text-cyan-50 font-mono flex flex-col">
       <Navbar />
@@ -156,14 +187,33 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <button className="btn-primary w-full mt-4">
+              <button
+                className="btn-primary w-full mt-4"
+                onClick={() => router.push(`/sala${user.currentRoom}`)}
+              >
+                {" "}
                 ▶ CONTINUAR PARTIDA
               </button>
             </div>
 
             <div className="flex flex-col gap-2">
-              <button className="btn-secondary w-full">Nova Partida</button>
-              <button className="btn-secondary w-full border-red-600 text-red-400">
+              {/*Canvis nous Sección de acciones secundarias */}
+
+              <button
+                className="btn-secondary w-full"
+                onClick={() => router.push("/narrative ")}
+              >
+                Nova Partida
+              </button>
+              {/*Canvis nous Sección de acciones secundarias */}
+
+              <button
+                className="btn-secondary w-full border-red-600 text-red-400"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  router.push("/login");
+                }}
+              >
                 Tancar sessió
               </button>
             </div>
@@ -179,15 +229,23 @@ export default function ProfilePage() {
               <div className="grid grid-cols-3 gap-4 mb-4 text-[10px]">
                 <div>
                   <div className="text-muted uppercase mb-1">SALA ACTUAL</div>
-                  <div className="text-cyan font-bold text-lg">01 / 03</div>
+
+                  <div className="text-cyan font-bold text-lg">
+                    {" "}
+                    Sala {user.currentRoom} / 03
+                  </div>
                 </div>
                 <div>
                   <div className="text-muted uppercase mb-1">INICI</div>
-                  <div className="text-secondary text-sm">2087.03.14</div>
+                  <div className="text-secondary text-sm">
+                    2087.03.14 {user.startDate}
+                  </div>
                 </div>
                 <div>
                   <div className="text-muted uppercase mb-1">ESTAT</div>
-                  <span className="badge badge-amber">EN CURS</span>
+                  <span className="badge badge-amber">
+                    EN CURS {user.status}
+                  </span>
                 </div>
               </div>
               <div className="text-muted text-[10px] mb-1">PROGRÉS GLOBAL</div>
@@ -198,7 +256,7 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="flex justify-between text-muted text-[10px] mt-1">
-                <span>Sala 01 — Control Central</span>
+                <span>Sala {user.currentRoom} — Control Central</span>
                 <span>{user.completion}% completat</span>
               </div>
             </div>
