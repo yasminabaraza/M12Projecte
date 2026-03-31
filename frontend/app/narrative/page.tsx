@@ -1,13 +1,21 @@
+"use client";
 import Navbar from "@/components/layout/Navbar";
 import { NARRATIVE_COPY } from "@/constants/copy/narrative";
+import { useRouter } from "next/navigation";
 
-export default function NarrativePage() {
+function NarrativePage() {
+  const router = useRouter();
+
+  const goToRoom = () => {
+    router.push("/room/01");
+  };
+
   return (
     <main className="min-h-screen bg-abyss-bg text-cyan-50 font-mono flex flex-col">
       <Navbar />
 
       <div className="flex-1 flex flex-col md:flex-row border-t border-cyan-900/30">
-        {/* Columna esquerra: Visual de l'estació */}
+        {/* Columna izquierda: Visual de la estación */}
         <div className="w-full md:w-1/2 p-12 flex flex-col items-center justify-center border-r border-cyan-900/20 relative">
           <div className="absolute top-12 left-12 space-y-1">
             <p className="text-[10px] text-cyan-900 tracking-widest">
@@ -18,7 +26,7 @@ export default function NarrativePage() {
             </p>
           </div>
 
-          {/* Esquema de la càpsula */}
+          {/* Esquema de la cápsula */}
           <div className="w-64 h-100 border-2 border-cyan-900/30 rounded-t-full relative flex items-center justify-center opacity-40">
             <div className="w-full h-px bg-cyan-900/30 absolute top-1/3" />
             <div className="w-full h-px bg-cyan-900/30 absolute top-2/3" />
@@ -30,7 +38,7 @@ export default function NarrativePage() {
           </div>
         </div>
 
-        {/* Columna dreta: Text narratiu */}
+        {/* Columna derecha: Texto narrativo */}
         <div className="w-full md:w-1/2 p-12 md:p-24 overflow-y-auto">
           <header className="mb-12">
             <p className="text-cyan-700 text-[10px] tracking-[0.4em] mb-2 uppercase">
@@ -59,7 +67,7 @@ export default function NarrativePage() {
             ))}
           </section>
 
-          {/* Consola d'estat */}
+          {/* Consola de estado */}
           <div className="mt-12 p-6 bg-cyan-950/20 border-l-2 border-cyan-500/50 space-y-1">
             {NARRATIVE_COPY.console.map((line, i) => (
               <p key={i} className={`text-[10px] font-bold ${line.className}`}>
@@ -76,13 +84,22 @@ export default function NarrativePage() {
             ))}
           </div>
 
-          {/* Botons d'acció */}
-          <div className="mt-12 flex items-center gap-8">
-            <button className="px-10 py-4 bg-cyan-500 text-black font-black text-[10px] tracking-[0.3em] uppercase hover:bg-cyan-400 transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)]">
-              ▶ {NARRATIVE_COPY.cta.primary}
+          {/* Botones de acción */}
+          <div className="mt-6 flex flex-col gap-4">
+            {/* ▶ Entrar a Sala 01 */}
+            <button
+              onClick={() => router.push("/room/01")}
+              className="px-10 py-4 bg-cyan-500 text-black font-black text-[10px] tracking-[0.3em] uppercase hover:bg-cyan-400 transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)]"
+            >
+              ▶ ENTRAR SALA 01
             </button>
-            <button className="text-[9px] text-cyan-900 tracking-widest uppercase hover:text-cyan-400 transition-colors">
-              ⇠ {NARRATIVE_COPY.cta.secondary}
+
+            {/* ⇠ Volver a Inicio */}
+            <button
+              onClick={() => router.push("/")}
+              className="text-[9px] text-cyan-900 tracking-widest uppercase hover:text-cyan-400 transition-colors"
+            >
+              ⇠ Tornar a inici
             </button>
           </div>
         </div>
@@ -90,3 +107,5 @@ export default function NarrativePage() {
     </main>
   );
 }
+
+export default NarrativePage;
