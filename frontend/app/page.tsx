@@ -1,9 +1,14 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import { LANDING_COPY } from "@/constants/copy/landing";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+
 
 export default function LandingPage() {
-  const router = useRouter(); // Hook de Next.js para navegación programática
+  const router = useRouter();
 
   // Función para ir a narrativa
   const goToNarrative = () => {
@@ -67,26 +72,7 @@ export default function LandingPage() {
               ▶ {LANDING_COPY.ctaPrimary}
             </span>
           </button>
-
-          <div className="flex gap-12 text-[9px] tracking-[0.3em] text-cyan-900 uppercase font-bold">
-            {LANDING_COPY.ctaSecondary.map((cta) => {
-              // Mapear label a ruta
-              let target = "/";
-              if (cta.label.toLowerCase() === "instruccions") target = "/instruccions";
-              if (cta.label.toLowerCase() === "el meu perfil") target = "/profile";
-
-              return (
-                <button
-                  key={cta.label}
-                  onClick={() => router.push(target)}
-                  className="hover:text-cyan-400 transition-colors"
-                >
-                  {cta.label}
-                </button>
-              );
-            })}
           </div>
-        </div>
        </div>
       {/* Footer stats */}
       <footer className="w-full max-w-5xl grid grid-cols-4 border-t border-cyan-900/30 p-10 z-10">

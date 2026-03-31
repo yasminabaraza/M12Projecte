@@ -2,6 +2,7 @@
 
 import Navbar from "../../components/layout/Navbar";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RoomPage() {
   const router = useRouter();
@@ -24,20 +25,26 @@ export default function RoomPage() {
             onClick={() => router.push("/sala1")}
             className="px-4 py-2 bg-cyan-500 text-black font-bold hover:bg-cyan-400"
           >
-            Sala 01
+            Sala1
           </button>
           <button
             onClick={() => router.push("/sala2")}
             className="px-4 py-2 bg-cyan-500 text-black font-bold hover:bg-cyan-400"
           >
-            Sala 02
+            Sala2
           </button>
           <button
             onClick={() => router.push("/sala3")}
             className="px-4 py-2 bg-cyan-500 text-black font-bold hover:bg-cyan-400"
           >
-             Sala 03
+             Sala3
           </button>
+          <div>
+          {/* Altres elements del joc */}
+            <Link href="/extra" className="text-cyan-400 underline hover:text-cyan-600">
+              Accedir a la secció extra administrativa
+            </Link>
+          </div>
         </div>
       </div>
     </main>

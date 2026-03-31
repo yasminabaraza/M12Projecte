@@ -19,7 +19,9 @@ export default function Navbar() {
     // Landing page
     routesToRender = [
       { label: "Inici", href: "/" },
-      { label: "Entrar", onClick: () => router.push("/narrative") },
+      { label: "Entrar", href: "/narrative" },
+      { label: "Secció Extra", href: "/extra" },
+
     ];
   } else {
     // Páginas de narrativa / salas / instrucciones / perfil
@@ -59,6 +61,16 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
+          ) : route.href ? (
+            <Link
+              key={route.label}
+              href={route.href}
+              className={`cursor-pointer ${
+                pathname === route.href ? "text-cyan-400 border-b border-cyan-400 pb-1" : "hover:text-cyan-400"
+              }`}
+            >
+              {route.label}
+            </Link>
           ) : (
             <span
               key={route.label}
