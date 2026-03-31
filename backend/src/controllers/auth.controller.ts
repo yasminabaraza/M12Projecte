@@ -128,7 +128,7 @@ export async function register(req: Request, res: Response) {
       data: {
         email: normalizedEmail,
         username: normalizedUsername,
-        password: passwordHash,
+        passwordHash,
       },
       select: {
         id: true,

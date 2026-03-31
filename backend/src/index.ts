@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { prisma } from "./config/prisma";
+import { hashPassword } from "./utils/password";
 import authRouter from "./routes/auth.routes";
 
 dotenv.config();
@@ -20,11 +21,13 @@ app.get("/test-db", async (req, res) => {
 });
 
 app.get("/create-user", async (req, res) => {
+  const passwordHash = await hashPassword("123456");
+
   const user = await prisma.user.create({
     data: {
       email: "test@test.com",
       username: "yasmin",
-      password: "123456",
+      passwordHash,
     },
   });
 

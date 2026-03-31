@@ -7,26 +7,13 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "typecheck": "tsc --noEmit",
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
+    "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@prisma/adapter-pg": "^7.6.0",
-    "@prisma/client": "^7.5.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1",
-    "pg": "^8.20.0",
-    "prisma": "^7.5.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -37,5 +24,8 @@
     "prisma": "^7.6.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.6.0"
   }
 }
