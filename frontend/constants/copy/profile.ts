@@ -10,6 +10,10 @@ export interface User {
   completionRate?: number;
   attempts?: number;
   victories?: number;
+  // Nuevos campos
+  currentRoom?: string;
+  startDate?: string;
+  status?: string;
 }
 
 // Valores por defecto o constantes de prueba
