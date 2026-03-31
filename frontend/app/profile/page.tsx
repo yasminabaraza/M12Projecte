@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { User, DEFAULT_USER } from "@/constants/copy/profile";
 
 export default function ProfilePage() {
-
   const router = useRouter();
   const [user, setUser] = useState<User>(DEFAULT_USER);
   const [form, setForm] = useState<User>({ ...DEFAULT_USER });
@@ -241,7 +240,6 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       </div>
