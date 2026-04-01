@@ -67,28 +67,19 @@ export default function Navbar() {
           ) : route.href ? (
             <Link
               key={route.label}
-              href={route.href}
-              className={`cursor-pointer ${
-                pathname === route.href
-                  ? "text-cyan-400 border-b border-cyan-400 pb-1"
-                  : "hover:text-cyan-400"
-              }`}
+              href={route.href!}
+              className="hover:text-cyan-400 transition-colors"
             >
               {route.label}
             </Link>
           ) : (
-            <span
+            <button
               key={route.label}
               onClick={route.onClick}
-<<<<<<< HEAD
-              className={`cursor-pointer hover:text-cyan-400`}
-=======
-              className={`cursor-pointer ${
-                pathname === route.href
-
+            className="cursor-pointer hover:text-cyan-400"
             >
               {route.label}
-            </span>
+            </button>
           ),
         )}
       </div>
