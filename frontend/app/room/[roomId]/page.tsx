@@ -4,9 +4,8 @@ import Navbar from "@/components/layout/Navbar";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
-
 export default function RoomPage() {
-  const { roomId } = useParams();  // Objectes clicables de la sala
+  const { roomId } = useParams(); // Objectes clicables de la sala
 
   // Estado general
   const [time, setTime] = useState("16:07");
@@ -14,33 +13,39 @@ export default function RoomPage() {
   const [oxygen, setOxygen] = useState(17);
   const [pressure, setPressure] = useState(420);
   const [energy, setEnergy] = useState(34);
-  const [clues, setClues] = useState(["El codi té 4 dígits", "La profunditat de l'estació és 4.200 metres"]);
+  const [clues, setClues] = useState([
+    "El codi té 4 dígits",
+    "La profunditat de l'estació és 4.200 metres",
+  ]);
   const [enigmaInput, setEnigmaInput] = useState("");
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
 
   const verifyCode = () => {
-    if (enigmaInput === "4200") { // Ejemplo de código correcto
+    if (enigmaInput === "4200") {
+      // Ejemplo de código correcto
       setFeedback("correct");
     } else {
       setFeedback("wrong");
     }
     setEnigmaInput("");
-    setAttempts(prev => prev + 1);
-    setOxygen(prev => Math.max(prev - 5, 0)); // Penalización de oxígeno por intento
-    setTime(prev => {
+    setAttempts((prev) => prev + 1);
+    setOxygen((prev) => Math.max(prev - 5, 0)); // Penalización de oxígeno por intento
+    setTime((prev) => {
       const [hours, minutes] = prev.split(":").map(Number);
       const totalMinutes = hours * 60 + minutes + 2; // Añadir 2 minutos por intento
       const newHours = Math.floor(totalMinutes / 60) % 24;
       const newMinutes = totalMinutes % 60;
       return `${newHours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`;
     });
-    setClues(prev => [...prev, `Intent ${attempts + 1}: Codi ${enigmaInput} - ${enigmaInput === "4200" ? "Correcte" : "Incorrecte"}`]);
-    setEnergy(prev => Math.max(prev - 10, 0)); // Penalización de energía por intento
-    setPressure(prev => Math.max(prev - 20, 0)); // Penalización de presión por intento
+    setClues((prev) => [
+      ...prev,
+      `Intent ${attempts + 1}: Codi ${enigmaInput} - ${enigmaInput === "4200" ? "Correcte" : "Incorrecte"}`,
+    ]);
+    setEnergy((prev) => Math.max(prev - 10, 0)); // Penalización de energía por intento
+    setPressure((prev) => Math.max(prev - 20, 0)); // Penalización de presión por intento
   };
 
-
-   return (
+  return (
     <main className="min-h-screen flex flex-col bg-[#030d14] text-cyan-400">
       <Navbar />
 
@@ -60,7 +65,9 @@ export default function RoomPage() {
         <aside className="w-80 bg-[#040e15] border-l border-cyan-800/40 flex flex-col p-4 space-y-4 text-xs font-mono">
           {/* Estado de la misión */}
           <div>
-            <div className="uppercase tracking-widest text-cyan-500">Sala {roomId}/03</div>
+            <div className="uppercase tracking-widest text-cyan-500">
+              Sala {roomId}/03
+            </div>
             <div className="flex justify-between mt-1">
               <span>Temps</span>
               <span className="text-amber-400">{time}</span>
@@ -77,7 +84,9 @@ export default function RoomPage() {
 
           {/* Panel de inspección */}
           <div className="border-t border-cyan-700/30 pt-2">
-            <div className="text-cyan-500 uppercase tracking-widest mb-2">Inspecció</div>
+            <div className="text-cyan-500 uppercase tracking-widest mb-2">
+              Inspecció
+            </div>
             <div className="text-cyan-200 text-[11px]">
               Panel de Control – SISTEMA CENTRAL
               <ul className="list-disc ml-4 mt-1">
@@ -91,17 +100,24 @@ export default function RoomPage() {
 
           {/* Pistas recogidas */}
           <div className="border-t border-cyan-700/30 pt-2">
-            <div className="text-cyan-500 uppercase tracking-widest mb-2">Pistes recollides</div>
+            <div className="text-cyan-500 uppercase tracking-widest mb-2">
+              Pistes recollides
+            </div>
             <ul className="list-disc ml-4 text-cyan-200">
-              {clues.map((clue, i) => <li key={i}>{clue}</li>)}
+              {clues.map((clue, i) => (
+                <li key={i}>{clue}</li>
+              ))}
             </ul>
           </div>
 
           {/* Enigma activo */}
           <div className="border-t border-cyan-700/30 pt-2">
-            <div className="text-cyan-500 uppercase tracking-widest mb-2">Enigma de sala</div>
+            <div className="text-cyan-500 uppercase tracking-widest mb-2">
+              Enigma de sala
+            </div>
             <div className="text-cyan-200 text-[11px] mb-2">
-              La nota diu: &quot;La clau és la profunditat en dígits&quot;. Quin és el codi d&apos;accés de 4 dígits?
+              La nota diu: &quot;La clau és la profunditat en dígits&quot;. Quin
+              és el codi d&apos;accés de 4 dígits?
             </div>
             <input
               type="text"
@@ -117,7 +133,9 @@ export default function RoomPage() {
               Verificar codi
             </button>
             {feedback && (
-              <div className={`mt-1 text-xs px-1 py-1 rounded ${feedback === "correct" ? "bg-green-600/10 border border-green-400 text-green-400" : "bg-red-600/10 border border-red-400 text-red-400"}`}>
+              <div
+                className={`mt-1 text-xs px-1 py-1 rounded ${feedback === "correct" ? "bg-green-600/10 border border-green-400 text-green-400" : "bg-red-600/10 border border-red-400 text-red-400"}`}
+              >
                 {feedback === "correct" ? "Correcte!" : "Incorrecte"}
               </div>
             )}
