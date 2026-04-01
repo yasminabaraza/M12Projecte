@@ -22,10 +22,3 @@ jobs:
       - run: npm ci --ignore-scripts
 
       - run: npm test --workspace=frontend
-```
-
-El cambio clave es `cache-dependency-path: "**/package-lock.json"` que busca el lockfile en cualquier nivel del monorepo.
-
-Pero para saber exactamente por qué falló, necesito el **log completo del job** de GitHub Actions. Ve a:
-```
-GitHub → tu repo → Actions → el workflow fallido → Frontend Tests → clic en el paso que falla
