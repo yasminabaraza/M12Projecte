@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { prisma } from "./config/prisma";
 import { hashPassword } from "./utils/password";
 import authRouter from "./routes/auth.routes";
+import gameRouter from "./routes/game.routes";
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use("/auth", authRouter);
+app.use("/game", gameRouter);
 
 app.get("/", (req, res) => {
   res.send("Backend funcionando 🚀");
