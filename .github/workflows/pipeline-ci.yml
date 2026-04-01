@@ -1,6 +1,5 @@
 name: CI
 
-# S'executa en PRs cap a main i en pushes directes a main
 on:
   pull_request:
     branches: [main]
@@ -10,22 +9,23 @@ on:
 jobs:
   test-frontend:
     name: Frontend Tests
-    # Màquina virtual on s'executen els tests
     runs-on: ubuntu-latest
     steps:
-      # Clona el repositori
       - uses: actions/checkout@v4
 
-      # Instal·la Node.js i cacheja les dependències per anar més ràpid
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: "**/package-lock.json"
 
-      # Instal·la les dependències des de l'arrel (monorepo amb workspaces)
-      # --ignore-scripts evita executar husky, que no cal a CI
       - run: npm ci --ignore-scripts
 
-      # Executa els tests del frontend — si fallen, la pipeline falla i bloqueja el merge
       - run: npm test --workspace=frontend
+```
+
+El cambio clave es `cache-dependency-path: "**/package-lock.json"` que busca el lockfile en cualquier nivel del monorepo.
+
+Pero para saber exactamente por qué falló, necesito el **log completo del job** de GitHub Actions. Ve a:
+```
+GitHub → tu repo → Actions → el workflow fallido → Frontend Tests → clic en el paso que falla
