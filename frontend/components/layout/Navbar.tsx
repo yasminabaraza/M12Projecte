@@ -18,9 +18,9 @@ export default function Navbar() {
   if (pathname === "/") {
     // Landing page
     routesToRender = [
-      { label: "Inici", href: "/" },
       { label: "Entrar", href: "/narrative" },
-      { label: "Secció Extra", href: "/extra" },
+      { label: "Registrar-se", href: "/register" },
+
     ];
   } else {
     // Páginas de narrativa / salas / instrucciones / perfil
@@ -36,6 +36,7 @@ export default function Navbar() {
       },
       { label: "Instruccions", href: "/instruccions" },
       { label: "Perfil", href: "/profile" },
+      {label: "Ajuda", href: "/ajuda" },
       { label: "Logout", onClick: () => router.push("/") },
     ];
   }
@@ -80,11 +81,12 @@ export default function Navbar() {
             <span
               key={route.label}
               onClick={route.onClick}
-              className={`cursor-pointer hover:text-cyan-400`}
+              className={"cursor-pointer hover:text-cyan-400"}
             >
               {route.label}
             </span>
-          ),
+          )
+
         )}
       </div>
     </nav>
