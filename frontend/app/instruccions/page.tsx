@@ -72,13 +72,7 @@ export default function InstructionsPage() {
               {INSTRUCTIONS_COPY.cta.secondary}
             </button>
 
-            <button
-              onClick={() => router.push("/narrative")}
-              className="px-6 py-3 bg-cyan-500 text-black font-bold text-sm tracking-widest hover:bg-cyan-400"
-            >
-              ▶ {INSTRUCTIONS_COPY.cta.primary}
-            </button>
-          </div>
+            </div>
         </div>
       </div>
     </main>

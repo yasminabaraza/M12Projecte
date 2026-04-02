@@ -33,6 +33,10 @@ export default function RoomPage() {
 
     setFeedback(isCorrect ? "correct" : "wrong");
 
+    if (isCorrect) {
+      setDoorUnlocked(true);
+    }
+
     setAttempts((prev) => {
       const newAttempts = prev + 1;
 
@@ -51,6 +55,7 @@ export default function RoomPage() {
     }
 
     setEnigmaInput("");
+    setAttempts((prev) => prev + 1);
     setOxygen((prev) => Math.max(prev - 5, 0)); // Penalización de oxígeno por intento
     setTime((prev) => {
       const [hours, minutes] = prev.split(":").map(Number);
@@ -59,6 +64,10 @@ export default function RoomPage() {
       const newMinutes = totalMinutes % 60;
       return `${newHours.toString().padStart(2, "0")}:${newMinutes.toString().padStart(2, "0")}`;
     });
+    setClues((prev) => [
+      ...prev,
+      `Intent ${attempts + 1}: Codi ${enigmaInput} - ${enigmaInput === "4200" ? "Correcte" : "Incorrecte"}`,
+    ]);
     setEnergy((prev) => Math.max(prev - 10, 0)); // Penalización de energía por intento
     setPressure((prev) => Math.max(prev - 20, 0)); // Penalización de presión por intento
   };
