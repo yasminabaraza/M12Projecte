@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 /** Dades de l'usuari autenticat extretes del JWT */
@@ -64,7 +64,12 @@ const getInitialUser = (): AuthUser | null => {
  * les funcions login/logout a tots els components fills.
  */
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(getInitialUser);
+  const [user, setUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
+    const initialUser = getInitialUser();
+    if (initialUser) setUser(initialUser);
+  }, []);
 
   /**
    * Desa el token a localStorage i a una cookie per al middleware de Next.js,
