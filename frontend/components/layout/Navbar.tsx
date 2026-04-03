@@ -14,11 +14,11 @@ interface NavRoute {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
 
   let routesToRender: NavRoute[] = [];
 
-  if (pathname === PATHS.HOME) {
+  if (pathname === PATHS.HOME && !isAuthenticated) {
     // Landing page
     routesToRender = [
       { label: "Entrar", href: PATHS.NARRATIVE },
