@@ -8,9 +8,17 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { logout } = useAuth();
-  const [user, setUser] = useState<User>(DEFAULT_USER);
-  const [form, setForm] = useState<User>({ ...DEFAULT_USER });
+  const { logout, user: authUser } = useAuth();
+  const [user, setUser] = useState<User>({
+    ...DEFAULT_USER,
+    username: authUser?.username ?? DEFAULT_USER.username,
+    email: authUser?.email ?? DEFAULT_USER.email,
+  });
+  const [form, setForm] = useState<User>({
+    ...DEFAULT_USER,
+    username: authUser?.username ?? DEFAULT_USER.username,
+    email: authUser?.email ?? DEFAULT_USER.email,
+  });
   const [editing, setEditing] = useState(false);
   const [success, setSuccess] = useState(false);
 
