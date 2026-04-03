@@ -22,21 +22,6 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    if (authUser) {
-      setUser((prev) => ({
-        ...prev,
-        username: authUser.username,
-        email: authUser.email,
-      }));
-      setForm((prev) => ({
-        ...prev,
-        username: authUser.username,
-        email: authUser.email,
-      }));
-    }
-  }, [authUser]);
-
   //Arxius estaticos
   const achievements = [
     { name: "Primer immersió", icon: "🌊", unlocked: true },
