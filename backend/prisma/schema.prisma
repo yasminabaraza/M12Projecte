@@ -22,8 +22,8 @@ model Game {
   user          User     @relation(fields: [userId], references: [id])
 
   status        String   @default("active")
-  currentRoomId Int
-  currentRoom   Room     @relation(fields: [currentRoomId], references: [id])
+  currentRoomId Int?
+  currentRoom   Room?     @relation(fields: [currentRoomId], references: [id])
 
   state         Json?
   createdAt     DateTime @default(now())

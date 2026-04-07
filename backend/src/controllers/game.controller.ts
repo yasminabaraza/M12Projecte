@@ -74,6 +74,61 @@ export async function seedRoom(req: Request, res: Response) {
 }
 
 /**
+ * Inicia una nova partida per a l'usuari autenticat.
+ */
+export async function startGame(req: Request, res: Response) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Usuari no autenticat" });
+    }
+
+    const userId = Number(req.user.id);
+
+    const initialRoom = await prisma.room.findFirst({
+      where: { isInitial: true },
+    });
+
+    if (!initialRoom) {
+      return res.status(404).json({
+        message: "No s'ha trobat cap sala inicial",
+      });
+    }
+
+    const game = await prisma.game.create({
+      data: {
+        userId,
+        status: "active",
+        currentRoomId: initialRoom.id,
+        state: {
+          inventory: [],
+          solvedPuzzles: [],
+          collectedObjects: [],
+        },
+      },
+      include: {
+        currentRoom: {
+          include: {
+            objects: true,
+            puzzle: true,
+          },
+        },
+      },
+    });
+
+    return res.status(201).json({
+      message: "Partida iniciada correctament",
+      game,
+    });
+  } catch (error) {
+    console.error("Error iniciant la partida:", error);
+
+    return res.status(500).json({
+      message: "Error intern del servidor",
+    });
+  }
+}
+
+/**
  * Retorna la partida activa de l'usuari autenticat.
  * - Requereix passar pel middleware authenticate (req.user definit).
  * - Si no hi ha partida activa, retorna 404 amb missatge clar.
