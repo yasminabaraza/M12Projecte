@@ -6,30 +6,49 @@ datasource db {
   provider = "postgresql"
 }
 
+/**
+ * Els camps `role` i `status` es modelen mitjançant enums per garantir
+ * la integritat dels valors possibles i evitar estats invàlids.
+ * Es tracta de conceptes tancats propis del domini del joc, que no
+ * canviaran al llarg del temps, assegurant així que només s’introdueixin
+ * dades que segueixin l’estàndard establert.
+ */
+
+enum Role {
+  user
+  admin
+}
+
+enum GameStatus {
+  active
+  abandoned
+  completed
+}
+
 model User {
   id           Int    @id @default(autoincrement())
   email        String @unique
   username     String @unique
   passwordHash String
-  role         String @default("user")
+  role         Role   @default(user)
 
-  games Game[]
+  // 1 usuari = 1 partida
+  game Game?
 }
 
 model Game {
   id     Int  @id @default(autoincrement())
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  status        String @default("active")
+  status        GameStatus @default(active)
   currentRoomId Int?
-  currentRoom   Room?  @relation(fields: [currentRoomId], references: [id])
+  currentRoom   Room?      @relation(fields: [currentRoomId], references: [id])
 
-  state     Json?
+  // ESTAT DEL JOC (temps, score, pistes, etc.)
+  state     Json
   createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([currentRoomId])
+  updatedAt DateTime @updatedAt
 }
 
 model Room {
@@ -37,45 +56,24 @@ model Room {
   code        String  @unique
   name        String
   description String
-  image       String?
+  image       String? // imatge de la sala (frontend)
+  order       Int     @unique // progressió del joc (1,2,3...)
   isInitial   Boolean @default(false)
-  order       Int? // nou camp-> ordre de progressió de sales
 
-  objects InteractiveObject[]
   puzzle  Puzzle?
+  objects InteractiveObject[]
   games   Game[]
-
-  @@unique([order]) // evitar ordres duplicats
-  @@index([order]) // per ordenar o consultar ràpid
-}
-
-model InteractiveObject {
-  id     Int  @id @default(autoincrement())
-  roomId Int
-  room   Room @relation(fields: [roomId], references: [id])
-
-  name        String
-  description String
-  type        String
-
-  isInteractive Boolean @default(true)
-  isVisible     Boolean @default(true)
-  isCollected   Boolean @default(false)
-
-  action String?
-
-  @@index([roomId])
 }
 
 model Puzzle {
   id     Int  @id @default(autoincrement())
   roomId Int  @unique
-  room   Room @relation(fields: [roomId], references: [id])
+  room   Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   title     String
   statement String
   solution  String
-  reward    String?
+  reward    String? // recompenses del puzzle
   hints     Hint[]
 }
 
@@ -85,8 +83,24 @@ model Hint {
   puzzle   Puzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
 
   text  String
-  order Int    @default(1)
+  order Int
 
   @@unique([puzzleId, order])
-  @@index([puzzleId])
+}
+
+model InteractiveObject {
+  id     Int  @id @default(autoincrement())
+  roomId Int
+  room   Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String
+  type        String
+
+  isInteractive Boolean @default(true)
+  isVisible     Boolean @default(true)
+
+  action String?
+
+  @@index([roomId])
 }
