@@ -2,6 +2,8 @@
 
 Projecte full-stack desenvolupat com a treball de final de DAW (M12). Aplicació web amb un sistema de joc basat en habitacions, gestió d'usuaris i partides (Room Escape).
 
+🌐 **Aplicació en producció**: [https://abyssai.up.railway.app/](https://abyssai.up.railway.app/)
+
 ## Tecnologies
 
 | Capa          | Stack                                |
