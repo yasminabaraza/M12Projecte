@@ -6,6 +6,7 @@ import {
   startGame,
   saveGameProgress,
   submitPuzzleAnswer,
+  requestHint,
 } from "../controllers/game.controller";
 
 const router = Router();
@@ -26,8 +27,11 @@ router.post("/start", authenticate, startGame);
 // PATCH /game/:id/status  -> abandonar o completar la partida
 router.post("/save", authenticate, saveGameProgress);
 
-// Validar resposta del puzzle (task #108)
+// Validar resposta del puzzle
 router.post("/:id/answer", authenticate, submitPuzzleAnswer);
+
+// Demanar pista per al puzzle actual
+router.post("/:id/hint", authenticate, requestHint);
 
 // Partida activa
 router.get("/me/active", authenticate, getMyActiveGame);
