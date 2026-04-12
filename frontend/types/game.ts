@@ -11,6 +11,12 @@ export type InteractiveObject = {
   action: string | null;
 };
 
+export type Hint = {
+  id: number;
+  text: string;
+  order: number;
+};
+
 export type Puzzle = {
   id: number;
   roomId: number;
@@ -83,7 +89,7 @@ export type UseHintResponse = {
   hint: string;
   hintsUsed: number;
   hintsRemaining: number;
-  game: Game;
+  state: GameState;
 };
 
 export type InteractObjectRequest = {

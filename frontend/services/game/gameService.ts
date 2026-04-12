@@ -4,6 +4,7 @@ import type {
   GameResponse,
   StartGameResponse,
   SolveEnigmaResponse,
+  UseHintResponse,
   UpdateGameStateResponse,
   GameState,
 } from "@/types/game";
@@ -39,4 +40,8 @@ export function submitAnswer(
     "POST",
     { answer },
   );
+}
+
+export function requestHint(gameId: number): Promise<UseHintResponse> {
+  return authRequest<UseHintResponse>(ENDPOINTS.game.hint(gameId), "POST");
 }
