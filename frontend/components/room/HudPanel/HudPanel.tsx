@@ -1,14 +1,23 @@
-import type { Room, InteractiveObject } from "@/types/game";
+import type { Room, InteractiveObject, GameState } from "@/types/game";
 import ObjectPanel from "@/components/room/ObjectPanel/ObjectPanel";
+import PuzzlePanel from "@/components/room/PuzzlePanel/PuzzlePanel";
+import HintsPanel from "@/components/room/HintsPanel/HintsPanel";
 
 type HudPanelProps = {
   room: Room;
   selectedObject: InteractiveObject | null;
+  gameId: number;
+  gameState: GameState;
 };
 
 const TOTAL_ROOMS = 3;
 
-const HudPanel = ({ room, selectedObject }: HudPanelProps) => {
+const HudPanel = ({
+  room,
+  selectedObject,
+  gameId,
+  gameState,
+}: HudPanelProps) => {
   return (
     <aside className="w-80 bg-[#040e15] border-l border-cyan-800/40 flex flex-col p-4 space-y-4 text-xs font-mono">
       {/* Sala */}
@@ -58,19 +67,14 @@ const HudPanel = ({ room, selectedObject }: HudPanelProps) => {
       <ObjectPanel object={selectedObject} />
 
       {/* Enigma */}
-      {room.puzzle && (
-        <div className="border-t border-cyan-700/30 pt-2">
-          <div className="text-cyan-500 uppercase tracking-widest mb-2">
-            Enigma
-          </div>
-          <div className="text-cyan-200 text-[11px]">
-            {room.puzzle.statement}
-          </div>
-          {/* PuzzlePanel slot — PR3 */}
-        </div>
-      )}
+      {room.puzzle && <PuzzlePanel puzzle={room.puzzle} gameId={gameId} />}
 
-      {/* Pistes slot — PR3 */}
+      {/* Pistes */}
+      <HintsPanel
+        gameId={gameId}
+        hintsUsed={gameState.hintsUsed}
+        maxHints={gameState.maxHints}
+      />
     </aside>
   );
 };

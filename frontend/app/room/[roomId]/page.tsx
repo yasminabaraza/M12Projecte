@@ -8,7 +8,7 @@ import useRoom from "@/hooks/useRoom";
 import type { InteractiveObject } from "@/types/game";
 
 export default function RoomPage() {
-  const { room, objects, isLoading } = useRoom();
+  const { room, objects, gameId, gameState, isLoading } = useRoom();
   const [selectedObject, setSelectedObject] =
     useState<InteractiveObject | null>(null);
 
@@ -22,7 +22,7 @@ export default function RoomPage() {
     );
   }
 
-  if (!room) return null;
+  if (!room || !gameId || !gameState) return null;
 
   return (
     <main className="min-h-screen flex flex-col bg-[#030d14] text-cyan-400">
@@ -35,7 +35,12 @@ export default function RoomPage() {
           onSelectObject={setSelectedObject}
         />
 
-        <HudPanel room={room} selectedObject={selectedObject} />
+        <HudPanel
+          room={room}
+          selectedObject={selectedObject}
+          gameId={gameId}
+          gameState={gameState}
+        />
       </div>
     </main>
   );

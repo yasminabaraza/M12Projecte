@@ -1,10 +1,27 @@
 import type { Request, Response } from "express";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, Hint } from "@prisma/client";
 import { prisma } from "../db/prisma";
 import type { GameState } from "../types/game";
 import { defaultGameState, isValidGameState } from "../utils/gameState";
 import { GameStatus } from "@prisma/client";
 import { GAME_CONSTANTS } from "../constants/game.constants";
+
+/**
+ * Include reutilitzable per la sala actual.
+ * Exclou puzzle.solution per seguretat (el frontend no l'ha de rebre mai).
+ */
+const roomInclude = {
+  objects: true,
+  puzzle: {
+    select: {
+      id: true,
+      roomId: true,
+      title: true,
+      statement: true,
+      reward: true,
+    },
+  },
+} as const;
 
 /**
  * Inicia (o recupera) la partida de l'usuari autenticat.
@@ -27,7 +44,7 @@ export async function startGame(req: Request, res: Response) {
     if (existing) {
       const game = await prisma.game.findUnique({
         where: { userId },
-        include: { currentRoom: { include: { objects: true, puzzle: true } } },
+        include: { currentRoom: { include: roomInclude } },
       });
 
       return res.status(200).json({
@@ -38,7 +55,7 @@ export async function startGame(req: Request, res: Response) {
 
     const initialRoom = await prisma.room.findFirst({
       where: { isInitial: true },
-      include: { objects: true, puzzle: true },
+      include: roomInclude,
     });
 
     if (!initialRoom) {
@@ -55,12 +72,7 @@ export async function startGame(req: Request, res: Response) {
         state: defaultGameState(),
       },
       include: {
-        currentRoom: {
-          include: {
-            objects: true,
-            puzzle: true,
-          },
-        },
+        currentRoom: { include: roomInclude },
       },
     });
 
@@ -129,12 +141,7 @@ export async function saveGameProgress(req: Request, res: Response) {
         state, // ja és GameState validat
       },
       include: {
-        currentRoom: {
-          include: {
-            objects: true,
-            puzzle: true,
-          },
-        },
+        currentRoom: { include: roomInclude },
       },
     });
 
@@ -166,12 +173,7 @@ export async function getMyActiveGame(req: Request, res: Response) {
     const game = await prisma.game.findUnique({
       where: { userId },
       include: {
-        currentRoom: {
-          include: {
-            objects: true,
-            puzzle: true,
-          },
-        },
+        currentRoom: { include: roomInclude },
       },
     });
 
@@ -206,12 +208,7 @@ export async function getMyLastGame(req: Request, res: Response) {
     const game = await prisma.game.findFirst({
       where: { userId },
       include: {
-        currentRoom: {
-          include: {
-            objects: true,
-            puzzle: true,
-          },
-        },
+        currentRoom: { include: roomInclude },
       },
     });
 
@@ -326,16 +323,17 @@ export async function submitPuzzleAnswer(req: Request, res: Response) {
       where: { order: currentOrder + 1 },
     });
 
-    // Hi ha sala següent-> avançar
+    // Hi ha sala següent-> avançar (reset hintsUsed per la nova sala)
     if (nextRoom) {
+      const advanceState: GameState = { ...newState, hintsUsed: 0 };
       const updatedGame = await prisma.game.update({
         where: { id: gameId },
         data: {
           currentRoomId: nextRoom.id,
-          state: newState as unknown as Prisma.InputJsonValue,
+          state: advanceState as unknown as Prisma.InputJsonValue,
         },
         include: {
-          currentRoom: { include: { objects: true, puzzle: true } },
+          currentRoom: { include: roomInclude },
         },
       });
 
@@ -343,7 +341,7 @@ export async function submitPuzzleAnswer(req: Request, res: Response) {
         correct: true,
         completed: false,
         game: updatedGame,
-        state: newState,
+        state: advanceState,
       });
     }
 
@@ -361,6 +359,96 @@ export async function submitPuzzleAnswer(req: Request, res: Response) {
       correct: true,
       completed: true,
       game: updatedGame,
+      state: newState,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error intern del servidor" });
+  }
+}
+
+/**
+ * POST /game/:id/hint
+ * Sol·licita una pista per al puzzle de la sala actual.
+ *
+ * - 3 pistes per sala. El comptador hintsUsed es reinicia al canviar de sala.
+ * - Cada pista penalitza SCORE_HINT_PENALTY punts.
+ * - Retorna el text de la pista corresponent (ordenat per Hint.order).
+ */
+export async function requestHint(req: Request, res: Response) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Usuari no autenticat" });
+    }
+
+    const userId = Number(req.user.id);
+    const gameId = Number(req.params.id);
+
+    const game = await prisma.game.findFirst({
+      where: {
+        id: gameId,
+        userId,
+        status: GameStatus.active,
+      },
+      include: {
+        currentRoom: {
+          include: {
+            puzzle: {
+              include: {
+                hints: { orderBy: { order: "asc" } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!game || !game.currentRoom) {
+      return res.status(404).json({ message: "Partida activa no trobada" });
+    }
+
+    const puzzle = game.currentRoom.puzzle;
+    if (!puzzle) {
+      return res.status(400).json({ message: "Aquesta sala no té puzzle" });
+    }
+
+    const currentState: GameState = isValidGameState(game.state)
+      ? (game.state as GameState)
+      : defaultGameState();
+
+    if (currentState.hintsUsed >= GAME_CONSTANTS.MAX_HINTS) {
+      return res
+        .status(400)
+        .json({ message: "No queden pistes per aquesta sala" });
+    }
+
+    const hint: Hint | undefined = puzzle.hints[currentState.hintsUsed];
+    if (!hint) {
+      return res
+        .status(400)
+        .json({ message: "No hi ha més pistes disponibles" });
+    }
+
+    const newState: GameState = {
+      ...currentState,
+      hintsUsed: currentState.hintsUsed + 1,
+      score: Math.max(
+        GAME_CONSTANTS.MIN_SCORE,
+        currentState.score - GAME_CONSTANTS.SCORE_HINT_PENALTY,
+      ),
+    };
+
+    await prisma.game.update({
+      where: { id: gameId },
+      data: {
+        state: newState as unknown as Prisma.InputJsonValue,
+      },
+    });
+
+    return res.status(200).json({
+      hint: hint.text,
+      hintsUsed: newState.hintsUsed,
+      hintsRemaining: GAME_CONSTANTS.MAX_HINTS - newState.hintsUsed,
       state: newState,
     });
   } catch (error) {
