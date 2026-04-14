@@ -4,6 +4,8 @@ import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import RoomScene from "@/components/room/RoomScene/RoomScene";
 import HudPanel from "@/components/room/HudPanel/HudPanel";
+import SaveIndicator from "@/components/room/SaveIndicator/SaveIndicator";
+import { GameProvider } from "@/context/GameContext";
 import useRoom from "@/hooks/useRoom";
 import type { InteractiveObject } from "@/types/game";
 
@@ -25,23 +27,30 @@ export default function RoomPage() {
   if (!room || !gameId || !gameState) return null;
 
   return (
-    <main className="min-h-screen flex flex-col bg-[#030d14] text-cyan-400">
-      <Navbar />
+    <GameProvider initialState={gameState} gameId={gameId}>
+      <main className="min-h-screen flex flex-col bg-[#030d14] text-cyan-400">
+        <Navbar />
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] flex-1">
-        <RoomScene
-          objects={objects}
-          selectedObjectId={selectedObject?.id ?? null}
-          onSelectObject={setSelectedObject}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] flex-1">
+          <RoomScene
+            objects={objects}
+            selectedObjectId={selectedObject?.id ?? null}
+            onSelectObject={setSelectedObject}
+          />
 
-        <HudPanel
-          room={room}
-          selectedObject={selectedObject}
-          gameId={gameId}
-          gameState={gameState}
-        />
-      </div>
-    </main>
+          <HudPanel
+            room={room}
+            selectedObject={selectedObject}
+            gameId={gameId}
+            gameState={gameState}
+          />
+        </div>
+
+        {/* Indicador de guardat (cantonada inferior esquerra) */}
+        <div className="fixed bottom-4 left-4">
+          <SaveIndicator />
+        </div>
+      </main>
+    </GameProvider>
   );
 }

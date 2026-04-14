@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import useRequestHint from "@/hooks/useRequestHint";
+import { useGameContext } from "@/context/GameContext";
 
 type HintsPanelProps = {
   gameId: number;
@@ -13,6 +14,7 @@ const HintsPanel = ({ gameId, hintsUsed, maxHints }: HintsPanelProps) => {
   const [revealedHints, setRevealedHints] = useState<string[]>([]);
   const [currentHintsUsed, setCurrentHintsUsed] = useState(hintsUsed);
   const { mutate, isPending } = useRequestHint();
+  const { save } = useGameContext();
 
   const hintsRemaining = maxHints - currentHintsUsed;
   const canRequestHint = hintsRemaining > 0;
@@ -26,6 +28,9 @@ const HintsPanel = ({ gameId, hintsUsed, maxHints }: HintsPanelProps) => {
         onSuccess: (data) => {
           setRevealedHints((prev) => [...prev, data.hint]);
           setCurrentHintsUsed(data.hintsUsed);
+        },
+        onSettled: () => {
+          save();
         },
       },
     );
