@@ -2,6 +2,7 @@ import type { Room, InteractiveObject, GameState } from "@/types/game";
 import ObjectPanel from "@/components/room/ObjectPanel/ObjectPanel";
 import PuzzlePanel from "@/components/room/PuzzlePanel/PuzzlePanel";
 import HintsPanel from "@/components/room/HintsPanel/HintsPanel";
+import TimerDisplay from "@/components/room/TimerDisplay/TimerDisplay";
 
 type HudPanelProps = {
   room: Room;
@@ -28,7 +29,8 @@ const HudPanel = ({
         <div className="text-cyan-200 text-[11px] mt-1">{room.name}</div>
       </div>
 
-      {/* Timer slot — PR4 */}
+      {/* Timer */}
+      <TimerDisplay />
 
       {/* Sistemes de l'estació (ambientació) */}
       <div className="border-t border-cyan-700/30 pt-2">
