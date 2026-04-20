@@ -42,9 +42,10 @@ const HintsPanel = ({ gameId, hintsUsed, maxHints }: HintsPanelProps) => {
 
           if (data.hintsRemaining <= 0) {
             setInfoMessage(hintLimitMessage);
+
+            //Sonido d'alerta implementat solament per quan s'arriba al límit de pistes.
+            AudioManager.play("alarm");
           }
-          //Sonido d'alerta implementat solamnt per quan s'arriba al límit de pistes.
-          AudioManager.play("alarm");
         },
         onError: (error) => {
           setInfoMessage(error.message ?? "No s'ha pogut demanar la pista.");
