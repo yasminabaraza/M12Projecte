@@ -47,16 +47,13 @@ const ROOMS: SeedRoom[] = [
           order: 1,
           text: "Relaciona la informació dels diferents objectes de la sala.",
         },
+
         {
           order: 2,
-          text: "La pressió pot donar-te una pista sobre la profunditat.",
-        },
-        {
-          order: 3,
           text: "Hi ha una relació proporcional entre pressió i profunditat.",
         },
         {
-          order: 4,
+          order: 3,
           text: "Multiplica la pressió per 10 per obtenir el valor final.",
         },
       ],
