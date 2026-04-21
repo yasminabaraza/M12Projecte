@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useRequestHint from "@/hooks/useRequestHint";
 import { useGameContext } from "@/context/GameContext";
+import { AudioManager } from "@/utils/AudioManager";
 
 type HintsPanelProps = {
   gameId: number;
@@ -13,14 +14,24 @@ type HintsPanelProps = {
 const HintsPanel = ({ gameId, hintsUsed, maxHints }: HintsPanelProps) => {
   const [revealedHints, setRevealedHints] = useState<string[]>([]);
   const [currentHintsUsed, setCurrentHintsUsed] = useState(hintsUsed);
+  const [infoMessage, setInfoMessage] = useState<string>("");
   const { mutate, isPending } = useRequestHint();
   const { save } = useGameContext();
 
   const hintsRemaining = maxHints - currentHintsUsed;
   const canRequestHint = hintsRemaining > 0;
+  const hintLimitMessage =
+    "Has arribat al límit de pistes. No es poden demanar més pistes per aquesta sala.";
 
   const handleRequestHint = () => {
-    if (!canRequestHint || isPending) return;
+    if (!canRequestHint) {
+      setInfoMessage(hintLimitMessage);
+      return;
+    }
+
+    if (isPending) return;
+
+    setInfoMessage("");
 
     mutate(
       { gameId },
@@ -28,6 +39,16 @@ const HintsPanel = ({ gameId, hintsUsed, maxHints }: HintsPanelProps) => {
         onSuccess: (data) => {
           setRevealedHints((prev) => [...prev, data.hint]);
           setCurrentHintsUsed(data.hintsUsed);
+
+          if (data.hintsRemaining <= 0) {
+            setInfoMessage(hintLimitMessage);
+
+            //Sonido d'alerta implementat solament per quan s'arriba al límit de pistes.
+            AudioManager.play("alarm");
+          }
+        },
+        onError: (error) => {
+          setInfoMessage(error.message ?? "No s'ha pogut demanar la pista.");
         },
         onSettled: () => {
           save();
@@ -46,11 +67,26 @@ const HintsPanel = ({ gameId, hintsUsed, maxHints }: HintsPanelProps) => {
       </div>
 
       {revealedHints.length > 0 && (
-        <ul className="list-disc ml-4 text-cyan-200 text-[11px] mb-2">
+        <div className="mb-2">
           {revealedHints.map((hint, i) => (
-            <li key={i}>{hint}</li>
+            <div
+              key={i}
+              className="bg-black text-green-400 font-mono text-xs p-2 mb-2 rounded border border-green-500/30"
+            >
+              [ABYSS AI LOG] {hint}
+            </div>
           ))}
-        </ul>
+        </div>
+      )}
+
+      {infoMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mb-2 rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[10px] text-amber-100"
+        >
+          {infoMessage}
+        </div>
       )}
 
       <button
