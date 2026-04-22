@@ -46,9 +46,14 @@ export default function GameOverPage() {
         ? "MISSIÓ FALLIDA"
         : "PARTIDA FINALITZADA";
 
+  const abandonedByTimer =
+    status === "abandoned" && (state?.timeRemainingSeconds ?? 0) <= 0;
+
   const subtitle =
     status === "abandoned"
-      ? "Temps esgotat. L'Abyss AI ha segellat els compartiments."
+      ? abandonedByTimer
+        ? "Temps esgotat. L'Abyss AI ha segellat els compartiments."
+        : "Has abandonat la missió abans d'hora. L'Abyss AI manté els compartiments segellats."
       : status === "completed"
         ? "Has desactivat la quarantena i recuperat el contacte amb la superfície."
         : "";

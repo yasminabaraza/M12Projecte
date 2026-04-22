@@ -3,6 +3,7 @@ import ObjectPanel from "@/components/room/ObjectPanel/ObjectPanel";
 import PuzzlePanel from "@/components/room/PuzzlePanel/PuzzlePanel";
 import HintsPanel from "@/components/room/HintsPanel/HintsPanel";
 import TimerDisplay from "@/components/room/TimerDisplay/TimerDisplay";
+import AbandonGameButton from "@/components/room/AbandonGameButton/AbandonGameButton";
 
 type HudPanelProps = {
   room: Room;
@@ -67,6 +68,9 @@ const HudPanel = ({ room, selectedObject, gameId }: HudPanelProps) => {
 
       {/* Pistes */}
       <HintsPanel gameId={gameId} />
+
+      {/* Abandonar missió (darrer recurs) */}
+      <AbandonGameButton gameId={gameId} />
     </aside>
   );
 };
