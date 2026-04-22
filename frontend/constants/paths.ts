@@ -5,6 +5,7 @@ export const PATHS = {
   PROFILE: "/profile",
   NARRATIVE: "/narrative",
   ROOM: "/room",
+  GAME_OVER: "/game-over",
   INSTRUCCIONS: "/instruccions",
   AJUDA: "/ajuda",
   ADMIN: "/admin",

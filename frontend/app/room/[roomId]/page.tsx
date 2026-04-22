@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import RoomScene from "@/components/room/RoomScene/RoomScene";
 import HudPanel from "@/components/room/HudPanel/HudPanel";
 import SaveIndicator from "@/components/room/SaveIndicator/SaveIndicator";
+import TimeExpiredGuard from "@/components/room/TimeExpiredGuard/TimeExpiredGuard";
 import { GameProvider } from "@/context/GameContext";
 import useRoom from "@/hooks/useRoom";
 import type { InteractiveObject } from "@/types/game";
@@ -51,6 +52,8 @@ export default function RoomPage() {
         <div className="fixed bottom-4 left-4">
           <SaveIndicator />
         </div>
+
+        <TimeExpiredGuard gameId={gameId} />
       </main>
     </GameProvider>
   );
