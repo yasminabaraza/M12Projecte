@@ -11,11 +11,10 @@ function formatRoomUrl(order: number): string {
 /**
  * Hook que gestiona l'estat de la sala actual a partir de la partida activa.
  *
- * Responsabilitats:
- * - Obté la partida activa via `useActiveGame` i n'extreu sala, puzzle i objectes.
- * - Redirigeix a /narrative si no hi ha partida activa (protecció de ruta).
- * - Redirigeix a la sala correcta si el roomId de la URL no coincideix
- *   amb la sala actual del joc (restauració d'estat).
+ * Redireccions:
+ * - Sense partida en cache → /narrative (l'usuari encara no n'ha iniciat cap).
+ * - Partida amb status != active (completed/abandoned) → /game-over.
+ * - URL no coincideix amb la sala actual → /room/0X de la sala actual.
  */
 const useRoom = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -28,13 +27,16 @@ const useRoom = () => {
   useEffect(() => {
     if (isLoading) return;
 
-    // Sense partida activa → redirigeix a narrativa
     if (!game || error) {
       router.replace(PATHS.NARRATIVE);
       return;
     }
 
-    // URL no coincideix amb sala actual → redirigeix a la sala correcta
+    if (game.status !== "active") {
+      router.replace(PATHS.GAME_OVER);
+      return;
+    }
+
     if (room && roomId !== formatRoomUrl(room.order)) {
       router.replace(`${PATHS.ROOM}/${formatRoomUrl(room.order)}`);
     }
