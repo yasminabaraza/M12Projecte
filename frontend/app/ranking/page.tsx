@@ -21,7 +21,7 @@ function RankingPage() {
         const apiUrl =
           process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
-        const res = await fetch(`${apiUrl}/ranking`);
+        const res = await fetch(`${apiUrl}/game/ranking`);
 
         if (!res.ok) {
           throw new Error("Error carregant el rànquing");
