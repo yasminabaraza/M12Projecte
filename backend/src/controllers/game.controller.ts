@@ -184,15 +184,10 @@ export async function patchGame(req: Request, res: Response) {
  * al askAssistantUseCase.
  */
 export const askAssistant = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Usuari no autenticat" });
-  }
-
-  const userId = Number(req.user.id);
+  const userId = Number(req.user!.id);
   const gameId = Number(req.params.id);
   const { question } = req.body;
 
   const result = await askAssistantUseCase(userId, gameId, question);
-
   return res.status(result.status).json(result.body);
 };
