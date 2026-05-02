@@ -16,6 +16,7 @@ export function defaultGameState(): GameState {
   return {
     hintsUsed: 0,
     aiHintsUsed: 0,
+    attemptsUsed: 0,
     timeRemainingSeconds: GAME_CONSTANTS.INITIAL_TIME_SECONDS,
     score: 0,
     solvedPuzzleIds: [],
@@ -62,7 +63,15 @@ export function isValidGameState(x: unknown): x is GameState {
  * amb un GameState coherent.
  */
 export function getStateOrDefault(x: unknown): GameState {
-  return isValidGameState(x) ? (x as GameState) : defaultGameState();
+  return isValidGameState(x)
+    ? {
+        ...(x as GameState),
+        attemptsUsed:
+          typeof (x as any).attemptsUsed === "number"
+            ? (x as any).attemptsUsed
+            : 0,
+      }
+    : defaultGameState();
 }
 /**
  * Registra una interacció sobre un objecte dins de l'estat de partida.

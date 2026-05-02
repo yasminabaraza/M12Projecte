@@ -15,6 +15,7 @@ export type ObjectInteraction = {
 
 export type GameState = {
   hintsUsed: number;
+  attemptsUsed: number;
   // Comptador global de consultes a l'assistent ABYSS AI
   aiHintsUsed: number;
   timeRemainingSeconds: number;

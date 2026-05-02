@@ -10,6 +10,9 @@ export const GAME_CONSTANTS = {
   MAX_HINTS: 3,
   MAX_AI_HINTS: 6,
 
+  // Intents per resoldre l'enigma de la sala
+  MAX_ATTEMPTS: 3,
+
   // Puntuació
   SCORE_CORRECT_ANSWER: 200,
   SCORE_WRONG_ANSWER_PENALTY: 50,
